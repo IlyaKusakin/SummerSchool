@@ -47,12 +47,12 @@ def registration():
         #напишите прогноз и верните его в ответе в параметре 'prediction'
         #vec = pickle.load(open("models/tfidf.pickle", "rb"))
         
-        resp = {'category':[0.5, 0.65, 0.75],
+        #resp = {'category':[0.5, 0.65, 0.75],
                 'message':json_params['user_message']}
     
-        response = jsonify(resp)
+        #response = jsonify(resp)
         
-        return response
+        #return response
 
         
     except Exception as e: 
