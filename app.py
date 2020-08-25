@@ -12,7 +12,14 @@ stemming = PorterStemmer()
 from nltk.tokenize import WordPunctTokenizer
 tokenizer = WordPunctTokenizer()
 
-
+nltk.download('stopwords')
+stopWords =nltk.corpus.stopwords.words()
+stopWords.append("the")
+stopWords.append('i')
+stopWords.append("a")
+stopWords.append('visitor')
+stopWords.append('chat')
+stopWords.append('transcript')
 
 
 from flask import Flask
