@@ -104,19 +104,14 @@ def text_preprocessing(message):
     message = message.replace("\s+", ' ')
     message = message.lower()
     
+    message = tokenizer.tokenize(message)
+    message = [stemming.stem(word) for word in message if word not in stopWords]
+    
     cleaned_message = ''
+    for word in message:
+        cleaned_message+=' '+word
     
-    if messafe=='':
-        return cleaned_message
-    
-    else:
-        message = tokenizer.tokenize(message)
-        message = [stemming.stem(word) for word in message if word not in stopWords]
-        
-        for word in message:
-            cleaned_message+=' '+word
-    
-        return cleaned_message
+    return cleaned_message
 
 
 application = Flask(__name__)
@@ -163,20 +158,20 @@ def registration():
         #message cleaning
         message_ = text_preprocessing(message)
         
-        if message_=='':
-            resp['category'] = [1.0,0.0,0.0]
+        if message.replace(' ', '')=='':
+            resp['category'] = [1.0, 0.0, 0.0]
         
-        else:        
+        else:
             #message vectorizing
             vector =vec.transform([message_]).toarray()
             vector = torch.FloatTensor(vector)
-            
+                
             #inference mode
             model.eval()
             prediction = F.softmax(model(vector)).detach()[0].tolist()
-            
+                
             resp['category'] = prediction
- 
+     
     except Exception as e: 
         print(e)
         resp['message'] = e
