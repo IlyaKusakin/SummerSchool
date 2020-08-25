@@ -72,7 +72,7 @@ def registration():
     
     #загружаем модели из файла
     model.load_state_dict(torch.load("./models/weights_86acc.pt"))
-    vec = pickle.load(open("./mytfidf.pickle", "rb"))
+    vec = pickle.load(open("./models/mytfidf.pickle", "rb"))
 
         
     
