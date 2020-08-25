@@ -32,27 +32,11 @@ import json
 from ast import literal_eval
 import traceback
 
-application = Flask(__name__)
+import torch
+from torch import nn
+import torch.nn.functional as F
 
-
-# тестовый вывод
-@application.route("/")  
-def hello():
-    resp = {'message':"Hello World!"}
-    
-    response = jsonify(resp)
-    
-    return response
-
-# предикт категории
-#{"user_message":"example123rfssg gsfgfd"}
-@application.route("/categoryPrediction" , methods=['GET', 'POST'])  
-def registration():
-    import torch
-    from torch import nn
-    import torch.nn.functional as F
-        
-    model = nn.Sequential(
+model = nn.Sequential(
         nn.Linear(1492,800),
         nn.ReLU(),
         nn.Dropout(0.8),
@@ -70,12 +54,30 @@ def registration():
         nn.BatchNorm1d(200),
         nn.Linear(200,3))
     
-    #загружаем модели из файла
-    model.load_state_dict(torch.load("./models/weights_86acc.pt"))
-    vec = pickle.load(open("./models/mytfidf.pickle", "rb"))
+#загружаем модели из файла
+model.load_state_dict(torch.load("./models/weights_86acc.pt"))
+vec = pickle.load(open("./models/mytfidf.pickle", "rb"))
 
-        
     
+
+application = Flask(__name__)
+
+
+# тестовый вывод
+@application.route("/")  
+def hello():
+    resp = {'message':"Hello World!"}
+    
+    response = jsonify(resp)
+    
+    return response
+
+# предикт категории
+#{"user_message":"example123rfssg gsfgfd"}
+@application.route("/categoryPrediction" , methods=['GET', 'POST'])  
+def registration():
+
+            
     resp = {'message':'ok'
            ,'category': -1
            }
