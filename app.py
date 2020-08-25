@@ -34,7 +34,31 @@ import traceback
 
 application = Flask(__name__)
 
+import torch
+from torch import nn
+import torch.nn.functional as F
+    
+model = nn.Sequential(
+    nn.Linear(1492,800),
+    nn.ReLU(),
+    nn.Dropout(0.8),
 
+    nn.BatchNorm1d(800),
+    nn.Linear(800,500),
+    nn.ReLU(),
+    nn.Dropout(0.8),
+
+    nn.BatchNorm1d(500),
+    nn.Linear(500,200),
+    nn.ReLU(),
+    nn.Dropout(0.8),
+    
+    nn.BatchNorm1d(200),
+    nn.Linear(200,3))
+
+#загружаем модели из файла
+model.load_state_dict(torch.load("./models/weights_86acc.pt"))
+vec = pickle.load(open("./mytfidf.pickle", "rb"))
 
 
 # тестовый вывод
@@ -57,7 +81,21 @@ def registration():
            }
 
     try:
-        pass
+        getData = request.get_data()
+        json_params = json.loads(getData) 
+        
+        message = json_params['user_message']
+        message_ = text_preprocessing(message)
+        
+        vector =vec.transform([message_]).toarray()
+        vector = torch.FloatTensor(vector)
+        
+        #напишите прогноз и верните его в ответе в параметре 'prediction'
+        model.eval()
+        prediction = F.softmax(model(vector)).detach()[0].tolist()
+        
+        resp['category'] = prediction
+
         
     except Exception as e: 
         print(e)
@@ -77,7 +115,7 @@ def text_preprocessing(message):
   message = message.lower()
 
   message = tokenizer.tokenize(message)
-  message = [stemming.stem(word) for word in message]# if word not in stopWords]
+  message = [stemming.stem(word) for word in message if word not in stopWords]
 
   clear_message = ''
   for word in message:
