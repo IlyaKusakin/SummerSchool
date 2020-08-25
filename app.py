@@ -79,7 +79,6 @@ def text_preprocessing(message):
     Example:
         
         Input:
-            
             "Chat transcript: Visitor: I am attempting to verify my card 
             however the payment is not posting. All charges typically post 
             immediately with my bank.Sofia: Hello!Sofia: Please stand by online, 
@@ -93,11 +92,9 @@ def text_preprocessing(message):
             vlp0QhPAE54cVIsykIWwTE0BZp70mAQy ]"
                                             
         Output:
-            
              "attempt verifi card howev payment post charg typic post 
              immedi bank sofia hellosofia pleas stand onlin may time 
-             resolv issu provid updat minut thank patienc"
-                                         
+             resolv issu provid updat minut thank patienc"                                       
    """
       
     message = re.sub('\[.*\]', '', message)
@@ -107,14 +104,19 @@ def text_preprocessing(message):
     message = message.replace("\s+", ' ')
     message = message.lower()
     
-    message = tokenizer.tokenize(message)
-    message = [stemming.stem(word) for word in message if word not in stopWords]
-    
     cleaned_message = ''
-    for word in message:
-        cleaned_message+=' '+word
     
-    return cleaned_message
+    if messafe=='':
+        return cleaned_message
+    
+    else:
+        message = tokenizer.tokenize(message)
+        message = [stemming.stem(word) for word in message if word not in stopWords]
+        
+        for word in message:
+            cleaned_message+=' '+word
+    
+        return cleaned_message
 
 
 application = Flask(__name__)
@@ -142,14 +144,13 @@ def registration():
     Example:
         Input:
             {"user_message":"example123rfssg gsfgfd"}
-                                            
         Output:
              {"category": [ 0.28119155764579773,
                            0.500522255897522,
                            0.21828614175319672],
              "message": "ok"}                                    
     """
-            
+    
     resp = {'message':'ok'
            ,'category': -1
            }
@@ -175,8 +176,7 @@ def registration():
             prediction = F.softmax(model(vector)).detach()[0].tolist()
             
             resp['category'] = prediction
-
-        
+ 
     except Exception as e: 
         print(e)
         resp['message'] = e
