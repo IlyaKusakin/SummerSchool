@@ -12,32 +12,6 @@ stemming = PorterStemmer()
 from nltk.tokenize import WordPunctTokenizer
 tokenizer = WordPunctTokenizer()
 
-    
-import torch
-from torch import nn
-import torch.nn.functional as F
-    
-model = nn.Sequential(
-    nn.Linear(1492,800),
-    nn.ReLU(),
-    nn.Dropout(0.8),
-
-    nn.BatchNorm1d(800),
-    nn.Linear(800,500),
-    nn.ReLU(),
-    nn.Dropout(0.8),
-
-    nn.BatchNorm1d(500),
-    nn.Linear(500,200),
-    nn.ReLU(),
-    nn.Dropout(0.8),
-    
-    nn.BatchNorm1d(200),
-    nn.Linear(200,3))
-
-#загружаем модели из файла
-model.load_state_dict(torch.load("./models/weights_86acc.pt"))
-vec = pickle.load(open("./mytfidf.pickle", "rb"))
 
 
 
