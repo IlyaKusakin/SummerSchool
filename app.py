@@ -158,19 +158,15 @@ def registration():
         #message cleaning
         message_ = text_preprocessing(message)
         
-        if message.replace(' ', '')=='':
-            resp['category'] = [1.0, 0.0, 0.0]
+        #message vectorizing
+        vector =vec.transform([message_]).toarray()
+        vector = torch.FloatTensor(vector)
+                
+        #inference mode
+        model.eval()
+        prediction = F.softmax(model(vector)).detach()[0].tolist()
         
-        else:
-            #message vectorizing
-            vector =vec.transform([message_]).toarray()
-            vector = torch.FloatTensor(vector)
-                
-            #inference mode
-            model.eval()
-            prediction = F.softmax(model(vector)).detach()[0].tolist()
-                
-            resp['category'] = prediction
+        resp['category'] = prediction
      
     except Exception as e: 
         print(e)
